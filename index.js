@@ -2,28 +2,45 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    // Добавить новый сервер (POST /add)
-    if (url.pathname === "/add" && request.method === "POST") {
-      try {
-        const body = await request.json();
-        if (!body.placeId || !body.jobId) {
-          return new Response("Missing placeId or jobId", { status: 400 });
+    // -------------------------
+    // Добавление сервера
+    // -------------------------
+    if (url.pathname === "/add") {
+      let placeId, jobId, pet;
+
+      if (request.method === "POST") {
+        try {
+          const body = await request.json();
+          placeId = body.placeId;
+          jobId = body.jobId;
+          pet = body.pet || "Unknown";
+        } catch (err) {
+          return new Response("Invalid JSON", { status: 400 });
         }
-
-        await env.SERVERS.put(body.jobId, JSON.stringify({
-          placeId: body.placeId,
-          jobId: body.jobId,
-          pet: body.pet || "Unknown",
-          timestamp: Date.now()
-        }));
-
-        return new Response("OK", { status: 200 });
-      } catch (err) {
-        return new Response("Invalid JSON", { status: 400 });
+      } 
+      else if (request.method === "GET") {
+        placeId = url.searchParams.get("placeId");
+        jobId = url.searchParams.get("jobId");
+        pet = url.searchParams.get("pet") || "Unknown";
       }
+
+      if (!placeId || !jobId) {
+        return new Response("Missing placeId or jobId", { status: 400 });
+      }
+
+      await env.SERVERS.put(jobId, JSON.stringify({
+        placeId: placeId,
+        jobId: jobId,
+        pet: pet,
+        timestamp: Date.now()
+      }));
+
+      return new Response("OK", { status: 200 });
     }
 
-    // Получить список серверов (GET /list)
+    // -------------------------
+    // Получение списка серверов
+    // -------------------------
     if (url.pathname === "/list" && request.method === "GET") {
       const keys = await env.SERVERS.list();
       const servers = [];
