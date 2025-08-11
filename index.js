@@ -42,24 +42,17 @@ export default {
     // Получение списка серверов
     // -------------------------
     if (url.pathname === "/list" && request.method === "GET") {
-      const keys = await env.SERVERS.list();
-      const servers = [];
+  const keys = await env.SERVERS.list();
+  const servers = [];
 
-      for (const key of keys.keys) {
-        const value = await env.SERVERS.get(key.name);
-        if (value) {
-          servers.push(JSON.parse(value));
-        }
-      }
-
-      // Оставляем только свежие записи (меньше 5 минут)
-      const freshServers = servers.filter(s => Date.now() - s.timestamp < 5 * 60 * 1000);
-
-      return new Response(JSON.stringify(freshServers), {
-        headers: { "Content-Type": "application/json" }
-      });
+  for (const key of keys.keys) {
+    const value = await env.SERVERS.get(key.name);
+    if (value) {
+      servers.push(JSON.parse(value));
     }
-
-    return new Response("Not Found", { status: 404 });
   }
+
+  return new Response(JSON.stringify(servers), {
+    headers: { "Content-Type": "application/json" }
+  });
 }
