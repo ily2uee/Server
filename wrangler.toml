@@ -4,5 +4,5 @@ compatibility_date = "2025-08-11"
 workers_dev = true
 
 kv_namespaces = [
-  { binding = "SERVERS", id = "XXXXXXXXXXXXXX" }
+  { binding = "SERVERS", id = "3d567b129b714309826df39812e5d43d" }
 ]
