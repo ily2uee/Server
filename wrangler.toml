@@ -1,4 +1,4 @@
-name = "pet-server-tracker"
+name = "pet-event"
 main = "index.js"
 compatibility_date = "2025-08-11"
 workers_dev = true
